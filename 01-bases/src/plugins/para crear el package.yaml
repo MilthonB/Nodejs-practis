@@ -1,0 +1,4 @@
+para crear el package.jso utilizar el comando npm init o npm init -y
+
+a nivel de package.jso has una carptea que se llame src que es un estandar
+Para inslar nodemon utilizar el siguietne comando: npm install -D nodemon Esto es para entorno de desarrollo 
