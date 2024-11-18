@@ -22,9 +22,6 @@ const logger = winston.createLogger({
     ]
 });
 
-
-
-
 module.exports = function buildLogger(service){
     return {
         log: (menssage)=> {
