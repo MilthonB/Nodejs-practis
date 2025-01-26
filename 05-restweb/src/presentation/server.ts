@@ -29,11 +29,15 @@ export class Server{
 
 
 
-
+        //* Middleware
         this.app.use(express.json()); //  todo lo que me manden tiene que ser un json
+        this.app.use( express.urlencoded({extended: true}) )
 
         
+        //* Routes
         this.app.use(this.routes);
+        
+        //* SPA
         this.app.use( express.static('public') );
         
         
