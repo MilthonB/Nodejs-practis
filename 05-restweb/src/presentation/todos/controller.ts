@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../../data/postgres";
+import { CreateTodoDtos, UpdateTodoDtos } from "../../domain/dtos";
 
 
 const todos = [
@@ -36,54 +37,36 @@ export class TodosController {
     }
 
     public createTodo = async (req: Request, res: Response) =>{
-        const {text} = req.body;
-        if( !text ) res.status(404).json({error: 'text is required'});
+        // const {text} = req.body;
+        const [error, createTotoDto] = CreateTodoDtos.create(req.body);
+        if(error) res.status(404).json({error});
         
         const todo = await prisma.todo.create(
             {
-                data: { text: text}
+                data: createTotoDto!
             }
         );
-        
-
         res.json(todo);
     }
 
     public actTodo = async(req: Request, res: Response) => {
         // hay que preguntar que el id sea un numero 
         const id = +req.params.id;
-        if( isNaN(id) ) res.status(404).json({ error: `Id is invalid ${id}` });
-
-        // const todo = todos.find( todo =>  todo.id === id );
+        const [error, updateTodoDto] =  UpdateTodoDtos.create({...req.body, id})
+        if(error) return res.status(400).json({error});
+        
         const todo = await prisma.todo.findFirst({where: {id:id}});
         if( !todo ) res.status(400).json({error: `Todo with id: ${id} not found`});
         
-        const {text, completedAt} = req.body;
-        
-        const updatedData: any = [];
-
-        if(text) updatedData.text =  text;
-        
-        if(completedAt) updatedData.completedAt =  completedAt === 'null' ? null: new Date(completedAt);
-
         const updateTodo =  await prisma.todo.update(
             {
                 where: {id},
-                data: {
-                    text: text,
-                    completedAt: completedAt
-                }
+                data: updateTodoDto!.values
             }
         )
 
         res.json(updateTodo);
 
-        // if( todo !== undefined && todo !== null ){
-        //     todo.text = text || todo.text;
-        //         (completedAt === 'null')
-        //         ? todo.completedAt = new Date()
-        //         : todo.completedAt = new Date( completedAt || todo?.completedAt );
-        // }
     }
 
 
