@@ -8,7 +8,6 @@ export class AppRoutes{
     static get route(): Router{
 
         const router = Router();
-        const todoController = new TodosController();
 
         router.use('/api/todos', TodoRoutes.routes);
 
